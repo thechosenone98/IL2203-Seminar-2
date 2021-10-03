@@ -20,7 +20,7 @@ package chap_5;
         logic [7:0] data_in;
         logic [3:0] address;
 
-        function new(input logic [7:0] din=0, addr=0);
+        function new(input logic [7:0] din=0, input logic [3:0] addr=0);
             printer = new();
             data_in = din;
             address = addr;
@@ -40,4 +40,22 @@ package chap_5;
             printer.print_8(.name("Data"), .val_8bits(data_in));
         endfunction
     endclass //MemTrans
+
+    class Transaction;
+        PrintUtilities printer;
+
+        logic [7:0] data;
+        logic [3:0] address;
+
+        function new(input logic [7:0] data, input logic [3:0] address);
+            this.printer = new();
+            this.data = data;
+            this.address = address;
+        endfunction
+
+        function void print;
+            printer.print_4(.name("Address"), .val_4bits(this.address));
+            printer.print_8(.name("Data"), .val_8bits(this.data));
+        endfunction
+    endclass //Transaction
 endpackage
