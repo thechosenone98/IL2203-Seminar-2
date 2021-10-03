@@ -11,9 +11,30 @@ package chap_5;
         endfunction
     endclass //PrintUtilities
 
+    class Statistics;
+        time startT;
+        static int nTrans = 0;
+        static time total_time_elapsed = 0;
+
+        function void start;
+            this.startT = $time;
+        endfunction
+
+        function void stop;
+            time elapsed = $time - startT;
+            nTrans++;
+            total_time_elapsed += elapsed;
+        endfunction
+
+        function Statistics copy;
+            copy = new();
+            copy.startT = this.startT;
+        endfunction
+    endclass //Statistics
 
     class MemTrans;
         PrintUtilities printer;
+        Statistics stat;
 
         static logic [3:0] last_address = 0;
 
@@ -22,6 +43,7 @@ package chap_5;
 
         function new(input logic [7:0] din=0, input logic [3:0] addr=0);
             printer = new();
+            stat = new();
             data_in = din;
             address = addr;
             last_address = address;
@@ -38,6 +60,16 @@ package chap_5;
         function void print_all;
             printer.print_4(.name("Address"), .val_4bits(address));
             printer.print_8(.name("Data"), .val_8bits(data_in));
+        endfunction
+
+        function MemTrans copy;
+            copy = new();
+            copy.address = this.address;
+            copy.data_in = this.data_in;
+            //We don't really care if the printer handle stays the same since it doesn't have any variable of it's own.
+            copy.printer = this.printer;
+            //The statistics handle is different since we don't want a modification done on the copy to reflect on this object.
+            copy.stat = stat.copy();
         endfunction
     endclass //MemTrans
 
