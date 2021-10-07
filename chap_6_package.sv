@@ -20,5 +20,9 @@ package chap_6;
         constraint address_constraint{
             address dist {0:=10, [1:14]:/80, 15:=10};
         }
+
+        function void print_all;
+            $display("Adress: %h\nData: %h", address, data);
+        endfunction
     endclass
 endpackage
