@@ -25,4 +25,14 @@ package chap_6;
             $display("Adress: %h\nData: %h", address, data);
         endfunction
     endclass
+
+    class MemTrans
+        rand bit rw; //read if rw = 0, write if rw = 1
+        rand logic [7:0] data_in;
+        rand logic [3:0] address;
+        //Constraints
+        constraint valid_rw_address {
+            (rw == 0)->(address inside {[0:7]});
+        }
+    endclass
 endpackage
