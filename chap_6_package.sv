@@ -67,4 +67,29 @@ package chap_6;
             data.size() inside {[1:1000]};
         }
     endclass
+
+    typedef enum { READ, WRITE } rw_e;
+    class Transaction;
+        rw_e old_rw;
+        bit[31:0] old_addr;
+        rand rw_e rw;
+        rand bit [31:0] addr, data;
+        constraint rw_constraint{
+            if(old_rw == WRITE)
+                rw != WRITE;
+        }
+        constraint addr_constraint{
+            if(old_rw == rw)
+                old_addr != addr;
+        }
+        
+        function void post_randomize;
+            old_rw = rw;
+            old_addr = addr;
+        endfunction
+
+        function void print_all;
+            $display("addr = %d, data = %d, rw = %s", addr, data, rw);
+        endfunction
+    endclass
 endpackage
