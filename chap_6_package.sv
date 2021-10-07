@@ -92,4 +92,30 @@ package chap_6;
             $display("addr = %d, data = %d, rw = %s", addr, data, rw);
         endfunction
     endclass
+
+    class Transaction2;
+        rand rw_e rw;
+        rand bit [31:0] addr, data;
+    endclass
+
+    class RandTransaction;
+        rand Transaction2 trans_array[];
+        constraint rw_constraint{
+            foreach (trans_array[i])
+                if((i > 0) && (trans_array[i-1].rw == WRITE))
+                    trans_array[i].rw != WRITE
+        }
+
+        constraint addr_constraint{
+            foreach (trans_array[i])
+                if((i > 0) && (trans_array[i-1].rw == trans_array[i].rw))
+                    trans_array[i-1].addr != trans_array[i].addr;
+        }
+
+        function new();
+            trans_array = new[TESTS];
+            foreach(trnas_array[i])
+                trans_array[i] = new();
+        endfunction;
+    endclass
 endpackage
