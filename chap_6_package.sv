@@ -59,4 +59,12 @@ package chap_6;
             end
         endfunction
     endclass;
+
+    class StimData;
+        rand int data[];
+        //Constraints
+        constraint data_constraint{
+            data.size() inside {[1:1000]};
+        }
+    endclass
 endpackage
