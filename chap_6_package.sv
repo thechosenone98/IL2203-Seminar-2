@@ -35,4 +35,28 @@ package chap_6;
             (rw == 0)->(address inside {[0:7]});
         }
     endclass
+
+
+    typedef enum bit { BLACK, WHITE } colors_t;
+    parameter PERCENT_WHITE = 20;
+    class Image
+        rand colors_t pixels[10][10];
+        constraint color_constraint{
+            foreach (pixels[i,j]) 
+                pixels[i][j] dist {
+                    BLACK:=100-PERCENT_WHITE, 
+                    WHITE := PERCENT_WHITE
+                };
+        }
+
+        function void print_all;
+            foreach (this.pixels[i]) begin
+                $write("%2d    ", i);
+                foreach (this.pixels[j]) begin
+                    $write("%0s ", this.pixels[i][j].name());
+                end
+                $display;
+            end
+        endfunction
+    endclass;
 endpackage
